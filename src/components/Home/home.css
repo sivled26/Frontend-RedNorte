@@ -1,0 +1,41 @@
+.home-container {
+  min-height: 100vh;
+  background-color: #ffffff;
+  color: #007bff;
+  display: flex;
+  flex-direction: column;
+}
+
+.home-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background-color: #007bff;
+  color: white;
+}
+
+.home-header h1 {
+  margin: 0;
+}
+
+.login-btn {
+  background-color: white;
+  color: #007bff;
+  border: 2px solid white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.login-btn:hover {
+  background-color: #0056b3;
+  color: white;
+}
+
+.home-main {
+  flex: 1;
+  padding: 40px;
+  text-align: center;
+}
