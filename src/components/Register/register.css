@@ -1,0 +1,56 @@
+.register-container {
+  width: 400px;
+  margin: 50px auto;
+  padding: 25px;
+  border-radius: 10px;
+  background-color: #ffffff;
+  text-align: center;
+  box-shadow: 0 0 10px rgba(0, 123, 255, 0.2);
+}
+
+.register-container h2 {
+  color: #007bff;
+  margin-bottom: 20px;
+}
+
+.register-container input,
+.register-container select {
+  width: 90%;
+  margin: 10px 0;
+  padding: 12px;
+  border: 1px solid #007bff;
+  border-radius: 8px;
+}
+
+.primary-btn {
+  width: 95%;
+  padding: 12px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.primary-btn:hover {
+  background-color: #0056b3;
+}
+
+.secondary-btn {
+  width: 95%;
+  padding: 12px;
+  background-color: white;
+  color: #007bff;
+  border: 2px solid #007bff;
+  border-radius: 25px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 15px;
+}
+
+.secondary-btn:hover {
+  background-color: #007bff;
+  color: white;
+}
