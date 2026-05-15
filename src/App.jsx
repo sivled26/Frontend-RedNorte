@@ -1,34 +1,97 @@
 import React, { useState } from "react";
 import Home from "./components/Home/Home";
 import Login from "./components/Login/Login";
-import Dashboard from "./components/Dashboard/Dashboard";
 import Register from "./components/Register/Register";
+import Dashboard from "./components/Dashboard/Dashboard";
+import Appointment from "./components/Appointment/Appointment";
 
 function App() {
-  // Estado de autenticación
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-  // Estado para mostrar login o registro
   const [showLogin, setShowLogin] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
+  const [showAppointment, setShowAppointment] = useState(false);
+  const [appointmentSpecialtyId, setAppointmentSpecialtyId] = useState(null);
+  const [appointmentIntent, setAppointmentIntent] = useState(false);
+  const [loginMessage, setLoginMessage] = useState("");
 
-  // Función para "Olvidé mi contraseña"
+  const goHome = () => {
+    setShowLogin(false);
+    setShowRegister(false);
+    setShowAppointment(false);
+    setAppointmentSpecialtyId(null);
+    setAppointmentIntent(false);
+    setLoginMessage("");
+  };
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    goHome();
+  };
+
   const handleForgotPassword = () => {
     alert("Funcionalidad de recuperación de contraseña en construcción.");
   };
 
+  const handleGoToLogin = () => {
+    setAppointmentIntent(false);
+    setLoginMessage("");
+    setShowRegister(false);
+    setShowLogin(true);
+  };
+
+  const handleGoToAppointment = (specialtyId = null) => {
+    if (!isAuthenticated) {
+      setAppointmentSpecialtyId(specialtyId);
+      setAppointmentIntent(true);
+      setLoginMessage("Debes iniciar sesión para agendar una cita médica.");
+      setShowRegister(false);
+      setShowLogin(true);
+      setShowAppointment(false);
+      return;
+    }
+    setAppointmentSpecialtyId(specialtyId);
+    setShowAppointment(true);
+  };
+
+  const handleLoginSuccess = () => {
+    setIsAuthenticated(true);
+    setShowLogin(false);
+    setLoginMessage("");
+
+    if (appointmentIntent) {
+      setAppointmentIntent(false);
+      setShowAppointment(true);
+    } else {
+      setShowAppointment(false);
+    }
+  };
+
   return (
     <div className="app-container">
-      {isAuthenticated ? (
-        // Si está autenticado, mostramos el Dashboard
-        <Dashboard />
+      {isAuthenticated && showAppointment ? (
+        <Appointment
+          initialSpecialtyId={appointmentSpecialtyId}
+          onBack={() => {
+            setShowAppointment(false);
+          }}
+        />
+      ) : isAuthenticated ? (
+        <Dashboard
+          onBack={handleLogout}
+          onGoToAppointment={() => handleGoToAppointment(null)}
+        />
       ) : showRegister ? (
-        // Si el usuario quiere registrarse, mostramos el formulario de registro
-        <Register onBack={() => setShowRegister(false)} />
+        <Register
+          onBack={() => {
+            setShowRegister(false);
+            setShowLogin(true);
+          }}
+        />
       ) : showLogin ? (
-        // Si el usuario quiere iniciar sesión, mostramos el login
         <Login
-          onLogin={() => setIsAuthenticated(true)}
+          message={loginMessage}
+          onLogin={handleLoginSuccess}
+          onBack={goHome}
           onForgotPassword={handleForgotPassword}
           onRegister={() => {
             setShowLogin(false);
@@ -36,8 +99,10 @@ function App() {
           }}
         />
       ) : (
-        // Página principal (Home) como invitado
-        <Home onGoToLogin={() => setShowLogin(true)} />
+        <Home
+          onGoToLogin={handleGoToLogin}
+          onGoToAppointment={handleGoToAppointment}
+        />
       )}
     </div>
   );
