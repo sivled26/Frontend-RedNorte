@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import "./login.css";
+import { login } from "../../api/api";
 
 function Login({ onLogin, onBack, onForgotPassword, onRegister, message = "" }) {
   const [user, setUser] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!user.trim() || !password.trim()) {
@@ -13,10 +14,12 @@ function Login({ onLogin, onBack, onForgotPassword, onRegister, message = "" }) 
       return;
     }
 
-    if (user === "admin" && password === "1234") {
+    try {
+      const data = await login(user, password); // 👈 usamos la función importada
+      console.log("Token recibido:", data.token);
       onLogin();
-    } else {
-      alert("Credenciales incorrectas. Usuario: admin / Contraseña: 1234");
+    } catch (error) {
+      alert("Credenciales incorrectas o error en el servidor.");
     }
   };
 
@@ -31,7 +34,7 @@ function Login({ onLogin, onBack, onForgotPassword, onRegister, message = "" }) 
         <form onSubmit={handleSubmit}>
           <input
             type="text"
-            placeholder="Correo electrónico o número de usuario"
+            placeholder="Correo electrónico"
             value={user}
             onChange={(e) => setUser(e.target.value)}
             required

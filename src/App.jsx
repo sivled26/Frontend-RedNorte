@@ -86,6 +86,7 @@ function App() {
             setShowRegister(false);
             setShowLogin(true);
           }}
+           onLogin={handleLoginSuccess}
         />
       ) : showLogin ? (
         <Login

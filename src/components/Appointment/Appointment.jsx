@@ -1,5 +1,26 @@
 import React, { useMemo, useRef, useState } from "react";
 import "./appointment.css";
+import { agendarCita } from "../../api/api";
+
+const handleAgendar = async () => {
+  try {
+    const payload = {
+      pacienteCorreo: localStorage.getItem("correo"), // o del token
+      doctorNombre: doctor.name,
+      fecha: selectedDate.toISOString().split("T")[0], // formato YYYY-MM-DD
+      hora: selectedTime,
+      motivo: specialty.name,
+    };
+
+    const result = await agendarCita(payload);
+    alert("Cita agendada con éxito");
+    console.log(result);
+  } catch (error) {
+    alert("Error al agendar cita");
+    console.error(error);
+  }
+};
+
 
 const SPECIALTIES = [
   {
@@ -209,7 +230,7 @@ function Appointment({ onBack, initialSpecialtyId = null }) {
     setPatient({ ...patient, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!specialty || !doctor || !selectedDate || !selectedTime || !timeConfirmed) {
       alert("Completa especialidad, médico, fecha y confirma el horario.");
@@ -219,6 +240,20 @@ function Appointment({ onBack, initialSpecialtyId = null }) {
       alert("Completa tus datos de registro.");
       return;
     }
+    
+    try {
+    const payload = {
+      pacienteCorreo: patient.email,
+      pacienteNombre: patient.name,
+      pacienteRun: patient.run,
+      pacienteTelefono: patient.phone,
+      doctorNombre: doctor.name,
+      especialidad: specialty.name,
+      fecha: selectedDate.toISOString().split("T")[0], // YYYY-MM-DD
+      hora: selectedTime
+    };
+
+    const result = await agendarCita(payload);
 
     alert(
       `Cita agendada con éxito\n\n` +
@@ -228,8 +263,14 @@ function Appointment({ onBack, initialSpecialtyId = null }) {
         `Horario: ${selectedTime}\n` +
         `Paciente: ${patient.name} (${patient.run})`
     );
-    onBack();
-  };
+
+    console.log("Respuesta del backend:", result);
+    onBack(); // volver atrás o redirigir
+  } catch (error) {
+    alert("Error al agendar cita");
+    console.error(error);
+  }
+};
 
   return (
     <div className="appointment-page">
@@ -430,7 +471,7 @@ function Appointment({ onBack, initialSpecialtyId = null }) {
                 type="email"
                 name="email"
                 placeholder="Correo electrónico"
-                value={patient.email}
+                value={localStorage.getItem("correo")}
                 onChange={handlePatientChange}
                 required
               />
